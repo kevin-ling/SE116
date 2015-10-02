@@ -58,11 +58,11 @@ Vector<string> wordLadder(const string &start, const string &end, Lexicon& dict)
     ladderQueue.add(ladder);
     while (!ladderQueue.isEmpty())
     {
-        Ladder first = ladderQueue.dequeue();
-        string bridge = first[first.size()-1];
+        Ladder first = ladderQueue.dequeue();            //dequeue the first ladder
+        string bridge = first[first.size()-1];           // use the end word to be the bridge
         if (bridge == end)
             return first;
-        for (int i = 0 ; i < bridge.size(); ++i)
+        for (int i = 0 ; i < bridge.size(); ++i)        // iterate through every possible transform
         {
             string search = bridge;
             char c;
@@ -72,12 +72,12 @@ Vector<string> wordLadder(const string &start, const string &end, Lexicon& dict)
                 if (bridge[i] == c)
                     continue;
                 search[i] = c;
-                if (dict.contains(search) && !usedWords.contains(search))
+                if (dict.contains(search) && !usedWords.contains(search))    // valid word and not used
                 {
-                    usedWords.add(search);
-                    Ladder newLadder(first);
-                    newLadder.push_back(search);
-                    ladderQueue.enqueue(newLadder);
+                    usedWords.add(search);                                  //marked this word used
+                    Ladder newLadder(first);                                //copy the ladder
+                    newLadder.push_back(search);                            //build the new ladder
+                    ladderQueue.enqueue(newLadder);                         //push it to the queue
                 }
                 
             }
