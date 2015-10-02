@@ -44,8 +44,10 @@ void printLadder(const Ladder &ladder)
         cout << word << ' ';
     cout << endl;
 }
-Vector<string> wordLadder(const string &start, const string &end, Lexicon &dict)
+Vector<string> wordLadder(const string &start, const string &end, Lexicon& dict)
 {
+    Lexicon usedWords;
+    usedWords.clear();
     Ladder ladder;
     if (!(dict.contains(start)&&dict.contains(end)))  // check if both words are valid
     {
@@ -70,9 +72,9 @@ Vector<string> wordLadder(const string &start, const string &end, Lexicon &dict)
                 if (bridge[i] == c)
                     continue;
                 search[i] = c;
-                if (dict.contains(search))
+                if (dict.contains(search) && !usedWords.contains(search))
                 {
-                    dict.remove(search);
+                    usedWords.add(search);
                     Ladder newLadder(first);
                     newLadder.push_back(search);
                     ladderQueue.enqueue(newLadder);
