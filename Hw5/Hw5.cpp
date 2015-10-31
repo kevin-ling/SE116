@@ -55,8 +55,9 @@ public:
             curr = start;
             host = first_not_null;
         }
-    }
     delete start;
+    }
+
 };
 
 int main(int argc, char* argv[]){
@@ -72,76 +73,51 @@ int main(int argc, char* argv[]){
 
     printResult(cout, tree);
 }
+Node* readTree(istream& is) {
+	Node* node;
+	int val = 0;
 
-Node* readTree(istream& is){
-    Node* node;
-    int val = 0;
-
-    if( ! (is >> val) ){
-        return NULL;
-    }
-    if(val==0){
-        return NULL;
-    }
-    else{
-        node = new Node(val);
-        node->left = readTree(is);
-        node->right= readTree(is);
-    }
-    return node;
+	if (!(is >> val)) {
+		return nullptr;
+	}
+	if (val == 0) {
+		return nullptr;
+	}
+	else {
+		node = new Node(val);
+		node->left = readTree(is);
+		node->right = readTree(is);
+	}
+	return node;
 }
 
-void drawTree(ostream& os, Node* node, int depth, string prefix){
-   
-    static vector<bool> indents;
-
-    if(!node) return;
-
-    if(depth == 0) indents.clear();
-
-    for(int i=0; i<indents.size(); i++){
-        if( i == indents.size()-1){
-            os<<prefix;
-            break;
-        }
-        if(indents[i])  os<<"| ";
-        else            os<<"  ";
-    }
-
-    os<<node->val<<endl;
-
-    indents.push_back(true);
-
-    if( node->right )   prefix = "|-";
-    else                prefix = "`-";
-
-    drawTree(os, node->left, depth+1, prefix);
-
-    if( depth < indents.size())
-        indents[depth] = false;
-
-    drawTree(os, node->right, depth+1, "`-");
-
-    indents.pop_back();
+void drawTree(ostream& os, Node* node, int depth, string prefix) {
+	if (!node)
+		return;
+	for (int i = 0; i < depth; i++) {
+		if (i == depth - 1) {
+			os << prefix;
+			break;
+		}
+		os << "  ";
+	}
+	os << node->val << endl;
+	drawTree(os, node->left, depth + 1, "|-");
+	drawTree(os, node->right, depth + 1, "`-");
 }
 
-void printResult(ostream& os, Node* root){
-
-    char del = ';';
-    Node* first = root;
-    for(int depth=1; first!=NULL; depth++){
-        Node* node = first;
-        first = NULL;
-
-        while(node){
-            os<<' '<<node->val;
-
-            if(!first) first = node->left;
-            if(!first) first = node->right;
-
-            node = node->next;
-        }
-        os<<del;
-    }
-    os<<endl;
+void printResult(ostream& os, Node* root) {
+	char del = ';';
+	Node* start = root;
+	while (start != nullptr) {
+		Node* curr = start;
+		start = nullptr;
+		while (curr) {
+			os << ' ' << curr->val;
+			start = !start ? (curr->left ? curr->left : curr->right) : start;
+			curr = curr->next;
+		}
+		os << del;
+	}
+	os << endl;
 }

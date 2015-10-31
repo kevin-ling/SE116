@@ -4,10 +4,10 @@
 #include <utility>
 #include <ctime>
 using namespace std;
-using Num_Expr = vector<pair<int, string>>;
-using ITER = vector<pair<int, string>>::iterator;
+using Num_Expr = vector<pair<double, string>>;
+using ITER = vector<pair<double, string>>::iterator;
 // store 4 numbers
-vector<int> nums;
+vector<double> nums;
 
 // store expression string
 vector<string> expr;
@@ -15,13 +15,13 @@ vector<string> expr;
 // 4 operators
 char op[4] = {'+','-','*','/'};
 // correspond function
-auto add = [](int a, int b)->int{return a+b;};
-auto sub = [](int a, int b)->int{return a-b;};
-auto x = [](int a, int b)->int{return a*b;};
-auto x_ = [](int a, int b)->int{return a/b;};
-std::function<int(int, int)> func[4] = {add, sub, x, x_};
+auto add = [](double a, double b)->double{return a+b;};
+auto sub = [](double a, double b)->double{return a-b;};
+auto x = [](double a, double b)->double{return a*b;};
+auto x_ = [](double a, double b)->double{return a/b;};
+std::function<double(double, double)> func[4] = {add, sub, x, x_};
 
-int getNum(string & str)
+double getNum(string & str)
 {
 	switch (str[0])
 	{
@@ -29,7 +29,7 @@ int getNum(string & str)
 		case 'Q' : return 12; break;
 		case 'K' : return 13; break;
 		default  : if (str == "10") return 10;
-				   return int(str[0]-'0'); break;
+				   return double(str[0]-'0'); break;
 	}
 }
 void fill_with_no_ij(Num_Expr& istr, Num_Expr& in,ITER &i,ITER &j)
@@ -40,7 +40,7 @@ void fill_with_no_ij(Num_Expr& istr, Num_Expr& in,ITER &i,ITER &j)
 }
 void construct(Num_Expr& istr, ITER &i, ITER &j, int k)
 {
-	int res = func[k](i->first, j->first);
+	double res = func[k](i->first, j->first);
 	string s = i->second +" "+ op[k] +" "+j->second;
 	if (!istr.empty())		// we don't need parenthesis at border
 		s = "( " + s +" )";     
@@ -70,23 +70,28 @@ string calculate(Num_Expr & numExpr)
 				
 				Num_Expr num_expr2(num_expr1);
 				string res;
-
 				// process with i,j and j,i 
 				// in case of 0-divider
 				if (j->first != 0)	
 				{
-					// construct new value and new expression with i and j
+					//if(!(k == 3 && (i->first % j->first != 0)))
+					
+						// construct new value and new expression with i and j
 					construct(num_expr1,i,j,k);
 					res = calculate(num_expr1);
 					if (!res.empty())
 						return res;
+					
 				}
 				if (i->first != 0)
 				{
+					//if(!(k == 3 && (j->first % i->first != 0)))
+					
 					construct(num_expr2,j,i,k);					
 					res = calculate(num_expr2);
 					if (!res.empty())
 						return res;
+					
 				}
 			}
 	return "";
@@ -102,5 +107,9 @@ int main()
 	{
 		num_expr.push_back(make_pair(getNum(str), str));
 	}
-	fout << calculate(num_expr) << endl;
+	string res = calculate(num_expr);
+	if (!res.empty())
+		fout << res << endl;
+	else
+		fout << "NO ANSWER" << endl;
 }
