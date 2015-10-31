@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <ctime>
+#include <string>
 using namespace std;
 using Num_Expr = vector<pair<double, string>>;
 using ITER = vector<pair<double, string>>::iterator;
@@ -38,10 +39,28 @@ void fill_with_no_ij(Num_Expr& istr, Num_Expr& in,ITER &i,ITER &j)
 	istr.insert(istr.end(),i+1, j);
 	istr.insert(istr.end(),j+1, in.end());
 }
+void checkParenthesis(string &str, string lhs, string rhs, int k)
+{
+	bool l = false, r = false;
+	switch(k)
+	{
+		case 0: l = true; r = true; break;
+		case 1: l = true; if (rhs.find_first_of("+-") == string::npos) r = true; break;
+		case 2: case 3: if (lhs.find_first_of("+-") == string::npos) l = true;
+						if (rhs.find_first_of("+-") == string::npos) r = true;
+						break;
+	}
+	if (l && lhs[0] == '(')
+		lhs = lhs.substr(2, lhs.size()-4);
+	if (r && rhs[0] == '(')
+		rhs = rhs.substr(2, rhs.size()-4);
+	str = lhs + " " + op[k] + " " + rhs;
+}
 void construct(Num_Expr& istr, ITER &i, ITER &j, int k)
 {
 	double res = func[k](i->first, j->first);
-	string s = i->second +" "+ op[k] +" "+j->second;
+	string s;//= i->second +" "+ op[k] +" "+j->second;
+	checkParenthesis(s, i->second, j->second, k);
 	if (!istr.empty())		// we don't need parenthesis at border
 		s = "( " + s +" )";     
 	istr.push_back(make_pair(res, s));
