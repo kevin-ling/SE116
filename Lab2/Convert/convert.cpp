@@ -1,11 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <map>
+#include <utility>
 #include <vector>
 #include <algorithm>
 using namespace std;
-map<string, string> rules;
+using rule = pair<string, string>;
+vector<pair<string,string>> rules;
 int minStep = 11;
 vector<string> used;
 
@@ -61,7 +62,7 @@ int main()
 	string A, B;
 	while (fin >> A >> B)
 	{
-		rules[A] = B;
+		rules.push_back(rule(A,B));
 	}
 	
 	used.resize(12);
